@@ -6,12 +6,27 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        :root {
+            --bg: #f7f7f8;
+            --text: #3a3a3a;
+            --link: #1a1a1a;
+            --hr: #d0d0d0;
+        }
+
+        [data-theme="dark"] {
+            --bg: #1f2023;
+            --text: #dcdcdc;
+            --link: #e5e5e5;
+            --hr: #444;
+        }
+
         body {
             margin: 40px auto;
             max-width: 700px;
             line-height: 1.6;
             font-size: 18px;
-            color: #444;
+            color: var(--text);
+            background: var(--bg);
             padding: 0 10px;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
@@ -19,20 +34,72 @@
             line-height: 1.2;
         }
         a {
-            color: #000;
+            color: var(--link);
             text-decoration: underline;
         }
         hr {
             border: 0;
-            border-top: 1px solid #ccc;
+            border-top: 1px solid var(--hr);
             margin: 40px 0;
         }
         ul {
             padding-left: 20px;
         }
+
+        .theme-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+        }
+
+        .icon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .sun {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+        .moon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0.5);
+        }
+
+        [data-theme="dark"] .sun {
+            opacity: 0;
+            transform: rotate(-90deg) scale(0.5);
+        }
+        [data-theme="dark"] .moon {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
     </style>
 </head>
 <body>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <svg class="icon sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/>
+            <path d="M12 20v2"/>
+            <path d="m4.93 4.93 1.41 1.41"/>
+            <path d="m17.66 17.66 1.41 1.41"/>
+            <path d="M2 12h2"/>
+            <path d="M20 12h2"/>
+            <path d="m6.34 17.66-1.41 1.41"/>
+            <path d="m19.07 4.93-1.41 1.41"/>
+        </svg>
+
+        <svg class="icon moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/>
+        </svg>
+    </div>
+
     <header>
         <h1>Nixietab</h1>
         <p>Full-stack developer with a focus on practical tools, open-source contributions, and production-ready systems.</p>
@@ -56,7 +123,7 @@
             <li>Server Management (deployment pipelines, monitoring, log aggregation, backups)</li>
             <li>Cybersecurity (network security, penetration testing, vulnerability assessment, secure coding practices)</li>
             <li>Networking (TCP/IP, routing, firewalls, VPN configuration, packet analysis, network diagnostics)</li>
-            <li>AWS (EC2, S3, RDS, Lambda, CloudFormation, IAM)</li>
+            <li>AWS (EC2, S3, Lambda)</li>
             <li>Git & Open-Source Collaboration</li>
             <li>Localization & Internationalization</li>
         </ul>
@@ -66,11 +133,12 @@
         <h2>Featured Projects</h2>
         <p>Projects I am actively developing and maintaining.</p>
         <ul>
-            <li><a href="https://github.com/nixietab/picodulce">picodulce</a> - cross-platform Minecraft launcher with full version isolation, automated modpack deployment, theme support, and secure OAuth-based account management. Built with Python, PyQt5, and its own backend. Handles 10k+ lines of code, integrates third-party APIs (Mojang, CurseForge, Modrinth, etc).</li>
-            <li><a href="https://github.com/nixietab/zucaro">zucaro</a> - Lightweight CLI launcher powering picodulce’s backend. Optimized for minimal embedded environments.</li>
             <li><a href="https://codeberg.org/bordplate/CloneHome">CloneHomeDecomp</a> - PC port of the Java2ME "Ratchet and Clank: Clone Home" (research project).</li>
+            <li><a href="https://github.com/nixietab/miraishi">Miraishi</a> - Simple peer-to-peer screensharing solution made in Go</li>
             <li><a href="https://github.com/nixietab/OpenSMN">OpenSMN</a> - A proxy API for Argentina’s National Weather Service.</li>
+            <li><a href="https://github.com/nixietab/picodulce">picodulce</a> - cross-platform Minecraft launcher.</li>
             <li><a href="https://github.com/subte-cc">subte.cc</a> - Free and open-source dynamic DNS service focused on simplicity, reliability, and performance.</li>
+            <li><a href="https://github.com/nixietab/zucaro">zucaro</a> - Lightweight CLI launcher powering picodulce’s backend. Optimized for minimal embedded environments.</li>
         </ul>
     </section>
 
@@ -85,7 +153,22 @@
     <hr>
 
     <footer>
-        <p><small>Page made simple, <a href="https://github.com/nixietab/nixietab.github.io">source here</a>.</small></p>
-    </footer>
+
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute("data-theme");
+            const next = current === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            localStorage.setItem("theme", next);
+        }
+
+        (function () {
+            const saved = localStorage.getItem("theme");
+            if (saved) {
+                document.documentElement.setAttribute("data-theme", saved);
+            }
+        })();
+    </script>
+
 </body>
 </html>
